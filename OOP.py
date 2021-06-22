@@ -26,16 +26,21 @@ class Student:
               f'Законченные курсы: {self.finished_courses}\nСредняя оценка за ДЗ: {self.get_avg_grade()}\n'
         return res
 
-    def compare_avg_grade(self, student):
-        if self.get_avg_grade() > student.get_avg_grade():
-            res = f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится лучше, чем {student.name} {student.surname} ({str(student.get_avg_grade())})\n'
-            return res
-        elif self.get_avg_grade() < student.get_avg_grade():
-            res = f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится хуже, чем {student.name} {student.surname} ({str(student.get_avg_grade())})\n'
-            return res
-        elif self.get_avg_grade() == student.get_avg_grade():
-            res = f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится также, как {student.name} {student.surname} ({str(student.get_avg_grade())})\n'
-            return res
+
+    def __gt__(self, student):
+        if not isinstance(student, Student):
+            print('Такого студента нет')
+            return
+        else:
+            compare = self.get_avg_grade() > student.get_avg_grade()
+            equal = self.get_avg_grade() == student.get_avg_grade()
+            if compare:
+                print(f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится лучше, чем {student.name} {student.surname} ({str(student.get_avg_grade())})\n')
+            elif equal:
+                print(f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится также, как {student.name} {student.surname} ({str(student.get_avg_grade())})\n')
+            else:
+                print(f'{self.name} {self.surname} ({str(self.get_avg_grade())}) учится хуже, чем {student.name} {student.surname} ({str(student.get_avg_grade())})\n')
+        return compare
 
 
 class Mentor:
@@ -58,16 +63,21 @@ class Lecturer(Mentor):
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.avg_mentor_grade()}\n'
         return res
 
-    def compare_avg_grades(self, lecturer):
-        if self.avg_mentor_grade() > lecturer.avg_mentor_grade():
-            res = f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции лучше, чем {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n'
-            return res
-        elif self.avg_mentor_grade() < lecturer.avg_mentor_grade():
-            res = f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции хуже, чем {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n'
-            return res
-        elif self.avg_mentor_grade() == lecturer.avg_mentor_grade():
-            res = f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции также хорошо, как {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n'
-            return res
+
+    def __lt__(self, lecturer):
+        if not isinstance(lecturer, Lecturer):
+            print('Такого лектора нет')
+            return
+        else:
+            compare = self.avg_mentor_grade() < lecturer.avg_mentor_grade()
+            equal = self.avg_mentor_grade() == lecturer.avg_mentor_grade()
+            if compare:
+                print(f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции хуже, чем {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n')
+            elif equal:
+                print(f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции также хорошо, как {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n')
+            else:
+                print(f'{self.name} {self.surname} ({str(self.avg_mentor_grade())}) ведёт лекции лучше, чем {lecturer.name} {lecturer.surname} ({str(lecturer.avg_mentor_grade())})\n')
+        return compare
 
 
 class Reviewer(Mentor):
@@ -123,15 +133,16 @@ worst_mentor.courses_attached += ['Python']
 best_student.rate_lectures(cool_mentor, 'Python', 10)
 some_student.rate_lectures(cool_mentor, 'Python', 8)
 some_student.rate_lectures(second_mentor, 'Python', 9)
-new_mentor.rate_hw(some_student, 'Python', 7)
-worst_mentor.rate_hw(best_student, 'Python', 6)
 
-print(cool_mentor.grades)
-print(some_student.grades)
+new_mentor.rate_hw(some_student, 'Python', 8)
+worst_mentor.rate_hw(best_student, 'Python', 7)
+
+print(cool_mentor.grades, '\n')
+print(some_student.grades, '\n')
 print(best_student.__str__())
 print(cool_mentor.__str__())
 print(worst_mentor.__str__())
-print(cool_mentor.compare_avg_grades(second_mentor))
-print(best_student.compare_avg_grade(some_student))
-print(get_avg_hw_grade([best_student, some_student], 'Python'))
-print(get_avg_lect_grade([cool_mentor, second_mentor]))
+print(get_avg_hw_grade([best_student, some_student], 'Python'), '\n')
+print(get_avg_lect_grade([cool_mentor, second_mentor]), '\n')
+cool_mentor.__lt__(second_mentor)
+some_student.__gt__(best_student)
